@@ -1,2 +1,2 @@
-# Rate-my-hair-stylist
-A review platform for hairstylist and beauty professionals.
+# Rate-my-Service-Provider
+A review platform for beauty professionals.
