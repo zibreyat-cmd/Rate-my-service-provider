@@ -595,40 +595,29 @@
       <button onclick="writeReview()">
         Write a Review
       </button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    </section>
+<script>
+const SUPABASE_URL = "https://suysredirdcgzqoqvopl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_jh3z6yXmHMtvXUr8uVziBw_22I3A7kJ";
 
-  </main>
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
+console.log("Supabase connected!");
 
-  <footer>
-
-    <strong>
-      ⭐ Rate My Service
-    </strong>
-
-    <p>
-      Helping people make better service decisions.
-    </p>
-
-    <p>
-      © 2026 Rate My Service
-    </p>
-
-  </footer>
-
-
-  <script>
-
-    async function searchServices() {
+async function searchServices() {
   const input = document.getElementById("searchInput");
   const message = document.getElementById("searchMessage");
 
   const search = input.value.trim();
 
-  if (search === "") {
+  if (!search) {
     message.style.display = "block";
-    message.textContent = "Type a provider, service, or city to search.";
+    message.textContent =
+      "Type a provider, service, or city to search.";
     return;
   }
 
@@ -643,32 +632,41 @@
     );
 
   if (error) {
-    console.error(error);
-    message.textContent = "Something went wrong while searching.";
+    console.error("SEARCH ERROR:", error);
+    message.textContent =
+      "Something went wrong while searching.";
     return;
   }
 
   if (!data || data.length === 0) {
-    message.textContent = `No providers found for "${search}".`;
+    message.textContent =
+      `No providers found for "${search}".`;
     return;
   }
 
- message.innerHTML = (
-  await Promise.all(
+  const cards = await Promise.all(
     data.map(async (provider) => {
-      const { data: reviewData } = await supabaseClient
-        .from("reviews")
-        .select("rating")
-        .eq("provider_id", provider.id);
 
-      const reviews = reviewData || [];
-      const reviewCount = reviews.length;
+      const { data: reviews, error: reviewError } =
+        await supabaseClient
+          .from("reviews")
+          .select("rating")
+          .eq("provider_id", provider.id);
+
+      if (reviewError) {
+        console.error("REVIEW ERROR:", reviewError);
+      }
+
+      const reviewList = reviews || [];
+
+      const reviewCount = reviewList.length;
 
       const averageRating =
         reviewCount > 0
           ? (
-              reviews.reduce(
-                (sum, review) => sum + Number(review.rating || 0),
+              reviewList.reduce(
+                (sum, review) =>
+                  sum + Number(review.rating || 0),
                 0
               ) / reviewCount
             ).toFixed(1)
@@ -676,51 +674,50 @@
 
       return `
         <div style="
-          padding: 20px;
-          margin-top: 15px;
-          background: white;
-          border-radius: 16px;
-          border: 1px solid #f3dce6;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+          padding:20px;
+          margin-top:15px;
+          background:white;
+          border-radius:16px;
+          border:1px solid #f3dce6;
+          box-shadow:0 5px 15px rgba(0,0,0,0.06);
         ">
 
           <strong style="
-            display: block;
-            font-size: 20px;
-            color: #c44d80;
-            margin-bottom: 6px;
+            display:block;
+            font-size:20px;
+            color:#c44d80;
+            margin-bottom:6px;
           ">
             ${provider.name || "Unnamed provider"}
           </strong>
 
-          <p style="margin: 4px 0;">
+          <p style="margin:4px 0;">
             💇🏽‍♀️ ${provider.category || ""}
           </p>
 
           <p style="
-            margin: 8px 0;
-            font-weight: 600;
-            color: #c44d80;
+            margin:8px 0;
+            font-weight:600;
+            color:#c44d80;
           ">
-            ⭐ ${averageRating} · ${reviewCount} ${
-        reviewCount === 1 ? "review" : "reviews"
-      }
+            ⭐ ${averageRating} · ${reviewCount}
+            ${reviewCount === 1 ? "review" : "reviews"}
           </p>
 
-          <p style="margin: 4px 0 15px;">
+          <p style="margin:4px 0 15px;">
             📍 ${provider.city || "Location not listed"}
           </p>
 
           <button
             onclick="viewReviews(${provider.id})"
             style="
-              border: none;
-              background: #d95f91;
-              color: white;
-              padding: 11px 20px;
-              border-radius: 10px;
-              font-weight: 600;
-              cursor: pointer;
+              border:none;
+              background:#d95f91;
+              color:white;
+              padding:11px 20px;
+              border-radius:10px;
+              font-weight:600;
+              cursor:pointer;
             "
           >
             View Reviews
@@ -729,88 +726,146 @@
         </div>
       `;
     })
-  )
-).join("");
+  );
+
+  message.innerHTML = cards.join("");
+}
+
+
 window.viewReviews = async function(providerId) {
-  const message = document.getElementById("searchMessage");
+
+  const message =
+    document.getElementById("searchMessage");
 
   message.style.display = "block";
   message.innerHTML = "Loading reviews...";
 
-  const { data, error } = await supabaseClient
-    .from("reviews")
-    .select("*")
-    .eq("provider_id", providerId)
-    .order("created_at", { ascending: false });
+  const { data, error } =
+    await supabaseClient
+      .from("reviews")
+      .select("*")
+      .eq("provider_id", providerId)
+      .order("created_at", {
+        ascending:false
+      });
 
   if (error) {
-    console.error(error);
-    message.innerHTML = "Something went wrong loading the reviews.";
+    console.error("REVIEW LOADING ERROR:", error);
+
+    message.innerHTML =
+      "Something went wrong loading the reviews.";
+
     return;
   }
 
   if (!data || data.length === 0) {
+
     message.innerHTML = `
       <div style="
-        background: white;
-        padding: 20px;
-        border-radius: 16px;
-        border: 1px solid #f3dce6;
+        background:white;
+        padding:20px;
+        border-radius:16px;
+        border:1px solid #f3dce6;
       ">
         <strong>No reviews yet.</strong>
-        <p style="margin-top: 6px;">
+
+        <p style="margin-top:6px;">
           Be the first person to review this provider!
         </p>
       </div>
     `;
+
     return;
   }
 
   message.innerHTML = `
-    <h3 style="margin-bottom: 15px;">Reviews</h3>
+    <h3 style="margin-bottom:15px;">
+      Reviews
+    </h3>
+
     ${data.map(review => `
       <div style="
-        background: white;
-        padding: 20px;
-        margin-top: 12px;
-        border-radius: 16px;
-        border: 1px solid #f3dce6;
+        background:white;
+        padding:20px;
+        margin-top:12px;
+        border-radius:16px;
+        border:1px solid #f3dce6;
       ">
-        <strong>${review.reviewer_name || "Anonymous"}</strong>
 
-        <p style="margin: 6px 0;">
+        <strong>
+          ${review.reviewer_name || "Anonymous"}
+        </strong>
+
+        <p style="margin:6px 0;">
           ⭐ ${review.rating || "No rating"}
         </p>
 
-        <p style="margin: 8px 0;">
+        <p style="margin:8px 0;">
           ${review.review_text || ""}
         </p>
 
-        <p style="font-size: 13px; color: #756b71;">
+        <p style="
+          font-size:13px;
+          color:#756b71;
+        ">
           ${review.service ? "Service: " + review.service : ""}
           ${review.price_paid ? " • $" + review.price_paid : ""}
         </p>
 
         ${
           review.is_verified
-            ? `<p style="color: #2e8b57; font-weight: 600;">
+            ? `
+              <p style="
+                color:#2e8b57;
+                font-weight:600;
+              ">
                 ✓ Verified review
-              </p>`
+              </p>
+            `
             : ""
         }
 
-        <p style="font-size: 13px; color: #756b71;">
-          👍 ${review.helpful_count || 0} people found this helpful
+        <p style="
+          font-size:13px;
+          color:#756b71;
+        ">
+          👍 ${review.helpful_count || 0}
+          people found this helpful
         </p>
+
       </div>
     `).join("")}
   `;
+};
+
+
+function chooseCategory(category) {
+
+  const message =
+    document.getElementById("searchMessage");
+
+  message.style.display = "block";
+
+  message.textContent =
+    "You selected " +
+    category +
+    ". Provider results are coming soon!";
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 }
-      
-    
 
 
-    function chooseCategory(category) {
+function writeReview() {
+
+  alert(
+    "Review submissions are coming soon! This is where clients will be able to share their experience."
+  );
+
+}
+</script>
 
       const message = document.getElementById("searchMessage");
 
