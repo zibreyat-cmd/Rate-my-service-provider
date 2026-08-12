@@ -620,21 +620,51 @@
 
   <script>
 
-    function searchServices() {
+    async function searchServices() {
+  const input = document.getElementById("searchInput");
+  const message = document.getElementById("searchMessage");
 
-      const input = document.getElementById("searchInput");
-      const message = document.getElementById("searchMessage");
+  const search = input.value.trim();
 
-      const search = input.value.trim();
+  if (search === "") {
+    message.style.display = "block";
+    message.textContent = "Type a provider, service, or city to search.";
+    return;
+  }
 
-      if (search === "") {
+  message.style.display = "block";
+  message.textContent = "Searching for providers...";
 
-        message.style.display = "block";
-        message.textContent =
-          "Type a provider, service, or city to search.";
+  const { data, error } = await supabase
+    .from("providers")
+    .select("*")
+    .or(
+      `name.ilike.%${search}%,category.ilike.%${search}%,city.ilike.%${search}%`
+    );
 
-        return;
-      }
+  if (error) {
+    console.error(error);
+    message.textContent = "Something went wrong while searching.";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    message.textContent = `No providers found for "${search}".`;
+    return;
+  }
+
+  message.innerHTML = data
+    .map(
+      (provider) => `
+        <div style="padding: 15px; margin-top: 10px; background: white; border-radius: 12px;">
+          <strong>${provider.name || "Unnamed provider"}</strong>
+          <p>${provider.category || ""}</p>
+          <p>${provider.city || ""}</p>
+        </div>
+      `
+    )
+    .join("");
+}
 
       message.style.display = "block";
       message.textContent =
