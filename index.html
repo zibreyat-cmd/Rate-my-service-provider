@@ -654,16 +654,51 @@
   }
 
   message.innerHTML = data
-    .map(
-      (provider) => `
-        <div style="padding: 15px; margin-top: 10px; background: white; border-radius: 12px;">
-          <strong>${provider.name || "Unnamed provider"}</strong>
-          <p>${provider.category || ""}</p>
-          <p>${provider.city || ""}</p>
-        </div>
-      `
-    )
-    .join("");
+  .map(
+    (provider) => `
+      <div style="
+        padding: 20px;
+        margin-top: 15px;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #f3dce6;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+      ">
+        <strong style="
+          display: block;
+          font-size: 20px;
+          color: #c44d80;
+          margin-bottom: 6px;
+        ">
+          ${provider.name || "Unnamed provider"}
+        </strong>
+
+        <p style="margin: 4px 0;">
+          💇🏽‍♀️ ${provider.category || ""}
+        </p>
+
+        <p style="margin: 4px 0 15px;">
+          📍 ${provider.city || "Location not listed"}
+        </p>
+
+        <button
+          onclick="viewReviews(${provider.id})"
+          style="
+            border: none;
+            background: #d95f91;
+            color: white;
+            padding: 11px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          View Reviews
+        </button>
+      </div>
+    `
+  )
+  .join("");
 }
 
       
