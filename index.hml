@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Rate My Hair Stylist</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff8fb;
+      color: #2d1f28;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 20px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    nav a {
+      margin-left: 25px;
+      text-decoration: none;
+      color: #2d1f28;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 90px 20px;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 19px;
+      margin-bottom: 35px;
+      color: #665761;
+    }
+
+    .search-box {
+      display: flex;
+      max-width: 650px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-box button {
+      border: none;
+      background: #d95f91;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      padding: 40px 8% 80px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: white;
+      width: 280px;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #665761;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      background: white;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">💇🏽‍♀️ Rate My Hair Stylist</div>
+
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Find a Stylist</a>
+      <a href="#">Write a Review</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Find a stylist you can trust.</h1>
+
+    <p>
+      Read real reviews from real clients before you book your next appointment.
+    </p>
+
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search for a stylist, service, or city..."
+      >
+
+      <button>Search</button>
+    </div>
+  </section>
+
+  <section class="features">
+
+    <div class="card">
+      <h3>⭐ Read Reviews</h3>
+      <p>
+        See what other clients really think about their hairstylist.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>💇🏽‍♀️ Find Your Stylist</h3>
+      <p>
+        Search for hairstylists by name, location, or service.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>💬 Share Your Experience</h3>
+      <p>
+        Leave a review and help someone else make their next hair decision.
+      </p>
+    </div>
+
+  </section>
+
+  <footer>
+    © 2026 Rate My Hair Stylist
+  </footer>
+
+</body>
+</html>
