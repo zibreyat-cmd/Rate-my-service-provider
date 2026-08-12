@@ -825,20 +825,54 @@ window.viewReviews = async function(providerId) {
             : ""
         }
 
-        <p style="
-          font-size:13px;
-          color:#756b71;
-        ">
-          👍 ${review.helpful_count || 0}
-          people found this helpful
-        </p>
-
+        <button
+  onclick="markHelpful(${review.id})"
+  style="
+    border:none;
+    background:#f8dce8;
+    color:#c44d80;
+    padding:8px 14px;
+    border-radius:10px;
+    font-weight:600;
+    cursor:pointer;
+  "
+>
+  👍 ${review.helpful_count || 0}
+  ${review.helpful_count === 1 ? "person" : "people"} found this helpful
+</button>
       </div>
     `).join("")}
   `;
 };
 
+window.markHelpful = async function(reviewId) {
+  const { data, error } = await supabaseClient
+    .from("reviews")
+    .select("helpful_count, provider_id")
+    .eq("id", reviewId)
+    .single();
 
+  if (error) {
+    console.error(error);
+    alert("Something went wrong.");
+    return;
+  }
+
+  const newCount = (Number(data.helpful_count) || 0) + 1;
+
+  const { error: updateError } = await supabaseClient
+    .from("reviews")
+    .update({ helpful_count: newCount })
+    .eq("id", reviewId);
+
+  if (updateError) {
+    console.error(updateError);
+    alert("Could not mark this review as helpful.");
+    return;
+  }
+
+  await viewReviews(data.provider_id);
+};
 function chooseCategory(category) {
 
   const message =
