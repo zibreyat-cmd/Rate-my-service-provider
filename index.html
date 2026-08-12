@@ -838,16 +838,282 @@ window.viewReviews = async function(providerId) {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  const SUPABASE_URL = "https://suysredirdcgzqoqvopl.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_jh3z6yXmHMtvXUr8uVziBw_22I3A7kJ";
+const SUPABASE_URL = "https://suysredirdcgzqoqvopl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_jh3z6yXmHMtvXUr8uVziBw_22I3A7kJ";
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Supabase connected!");
+
+async function searchServices() {
+  const input = document.getElementById("searchInput");
+  const message = document.getElementById("searchMessage");
+
+  const search = input.value.trim();
+
+  if (!search) {
+    message.style.display = "block";
+    message.textContent =
+      "Type a provider, service, or city to search.";
+    return;
+  }
+
+  message.style.display = "block";
+  message.textContent = "Searching for providers...";
+
+  const safeSearch = search.replace(/,/g, "");
+
+  const { data, error } = await supabaseClient
+    .from("providers")
+    .select("*")
+    .or(
+      `name.ilike.%${safeSearch}%,category.ilike.%${safeSearch}%,city.ilike.%${safeSearch}%`
+    );
+
+  if (error) {
+    console.error("Provider search error:", error);
+    message.textContent =
+      "Something went wrong while searching.";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    message.textContent =
+      `No providers found for "${search}".`;
+    return;
+  }
+
+  const providerCards = await Promise.all(
+    data.map(async (provider) => {
+
+      const { data: reviews, error: reviewError } =
+        await supabaseClient
+          .from("reviews")
+          .select("rating")
+          .eq("provider_id", provider.id);
+
+      if (reviewError) {
+        console.error("Review count error:", reviewError);
+      }
+
+      const reviewList = reviews || [];
+
+      const reviewCount = reviewList.length;
+
+      const averageRating =
+        reviewCount > 0
+          ? (
+              reviewList.reduce(
+                (sum, review) =>
+                  sum + Number(review.rating || 0),
+                0
+              ) / reviewCount
+            ).toFixed(1)
+          : "0.0";
+
+      return `
+        <div style="
+          padding: 20px;
+          margin-top: 15px;
+          background: white;
+          border-radius: 16px;
+          border: 1px solid #f3dce6;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+        ">
+
+          <strong style="
+            display: block;
+            font-size: 20px;
+            color: #c44d80;
+            margin-bottom: 6px;
+          ">
+            ${provider.name || "Unnamed provider"}
+          </strong>
+
+          <p style="margin: 4px 0;">
+            💇🏽‍♀️ ${provider.category || ""}
+          </p>
+
+          <p style="
+            margin: 8px 0;
+            font-weight: 600;
+            color: #c44d80;
+          ">
+            ⭐ ${averageRating} · ${reviewCount}
+            ${reviewCount === 1 ? "review" : "reviews"}
+          </p>
+
+          <p style="margin: 4px 0 15px;">
+            📍 ${provider.city || "Location not listed"}
+          </p>
+
+          <button
+            onclick="viewReviews(${provider.id})"
+            style="
+              border: none;
+              background: #d95f91;
+              color: white;
+              padding: 11px 20px;
+              border-radius: 10px;
+              font-weight: 600;
+              cursor: pointer;
+            "
+          >
+            View Reviews
+          </button>
+
+        </div>
+      `;
+    })
   );
 
-  console.log("Supabase connected!");
+  message.innerHTML = providerCards.join("");
+}
+
+
+window.viewReviews = async function(providerId) {
+
+  const message =
+    document.getElementById("searchMessage");
+
+  message.style.display = "block";
+  message.innerHTML = "Loading reviews...";
+
+  const { data, error } =
+    await supabaseClient
+      .from("reviews")
+      .select("*")
+      .eq("provider_id", providerId)
+      .order("created_at", {
+        ascending: false
+      });
+
+  if (error) {
+    console.error("Review loading error:", error);
+
+    message.innerHTML =
+      "Something went wrong loading the reviews.";
+
+    return;
+  }
+
+  if (!data || data.length === 0) {
+
+    message.innerHTML = `
+      <div style="
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        border: 1px solid #f3dce6;
+      ">
+        <strong>No reviews yet.</strong>
+
+        <p style="margin-top: 6px;">
+          Be the first person to review this provider!
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  message.innerHTML = `
+    <h3 style="margin-bottom: 15px;">
+      Reviews
+    </h3>
+
+    ${data.map(review => `
+      <div style="
+        background: white;
+        padding: 20px;
+        margin-top: 12px;
+        border-radius: 16px;
+        border: 1px solid #f3dce6;
+      ">
+
+        <strong>
+          ${review.reviewer_name || "Anonymous"}
+        </strong>
+
+        <p style="margin: 6px 0;">
+          ⭐ ${review.rating || "No rating"}
+        </p>
+
+        <p style="margin: 8px 0;">
+          ${review.review_text || ""}
+        </p>
+
+        <p style="
+          font-size: 13px;
+          color: #756b71;
+        ">
+          ${
+            review.service
+              ? "Service: " + review.service
+              : ""
+          }
+
+          ${
+            review.price_paid
+              ? " • $" + review.price_paid
+              : ""
+          }
+        </p>
+
+        ${
+          review.is_verified
+            ? `
+              <p style="
+                color: #2e8b57;
+                font-weight: 600;
+              ">
+                ✓ Verified review
+              </p>
+            `
+            : ""
+        }
+
+        <p style="
+          font-size: 13px;
+          color: #756b71;
+        ">
+          👍 ${review.helpful_count || 0}
+          people found this helpful
+        </p>
+
+      </div>
+    `).join("")}
+  `;
+};
+
+
+function chooseCategory(category) {
+
+  const message =
+    document.getElementById("searchMessage");
+
+  message.style.display = "block";
+
+  message.textContent =
+    "You selected " +
+    category +
+    ". Provider results are coming soon!";
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+function writeReview() {
+
+  alert(
+    "Review submissions are coming soon! This is where clients will be able to share their experience."
+  );
+
+}
 </script>
-  
-</body>
-</html>
