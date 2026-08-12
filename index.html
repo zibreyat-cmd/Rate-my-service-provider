@@ -635,7 +635,7 @@
   message.style.display = "block";
   message.textContent = "Searching for providers...";
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("providers")
     .select("*")
     .or(
@@ -666,10 +666,7 @@
     .join("");
 }
 
-      message.style.display = "block";
-      message.textContent =
-        "We're getting ready to find results for \"" + search + "\".";
-
+      
     
 
 
@@ -704,7 +701,7 @@
   const SUPABASE_URL = "https://suysredirdcgzqoqvopl.supabase.co";
   const SUPABASE_KEY = "sb_publishable_jh3z6yXmHMtvXUr8uVziBw_22I3A7kJ";
 
-  const supabase = window.supabase.createClient(
+  const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   );
