@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Rate My Service Provider</title>
+  <title>Rate My Service</title>
 
   <style>
     * {
@@ -15,106 +14,322 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       background: #fff8fb;
-      color: #2d1f28;
+      color: #29232a;
+      line-height: 1.5;
     }
 
     header {
       background: white;
-      padding: 20px 8%;
+      border-bottom: 1px solid #eeeeee;
+      padding: 20px 7%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .logo {
       font-size: 24px;
-      font-weight: bold;
+      font-weight: 700;
+      color: #29232a;
+    }
+
+    .logo span {
+      color: #d95f91;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
     }
 
     nav a {
-      margin-left: 25px;
       text-decoration: none;
-      color: #2d1f28;
+      color: #4b4248;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      color: #d95f91;
     }
 
     .hero {
       text-align: center;
-      padding: 90px 20px;
+      padding: 90px 20px 70px;
+      background: linear-gradient(
+        180deg,
+        #fff8fb 0%,
+        #fff 100%
+      );
+    }
+
+    .badge {
+      display: inline-block;
+      background: #fbe3ee;
+      color: #c44d80;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 22px;
     }
 
     .hero h1 {
       font-size: 52px;
-      margin-bottom: 20px;
+      line-height: 1.1;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+
+    .hero h1 span {
+      color: #d95f91;
     }
 
     .hero p {
-      font-size: 19px;
-      margin-bottom: 35px;
-      color: #665761;
+      max-width: 650px;
+      margin: 0 auto 35px;
+      color: #6d6269;
+      font-size: 18px;
     }
 
     .search-box {
       display: flex;
-      max-width: 650px;
+      max-width: 700px;
       margin: 0 auto;
       background: white;
-      border-radius: 12px;
+      border: 1px solid #eeeeee;
+      border-radius: 14px;
       padding: 8px;
-      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     }
 
     .search-box input {
       flex: 1;
       border: none;
-      padding: 15px;
-      font-size: 16px;
       outline: none;
+      padding: 16px;
+      font-size: 16px;
+      color: #29232a;
     }
 
     .search-box button {
       border: none;
       background: #d95f91;
       color: white;
-      padding: 15px 25px;
-      border-radius: 8px;
+      padding: 0 28px;
+      border-radius: 10px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
     }
 
-    .features {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      padding: 40px 8% 80px;
-      flex-wrap: wrap;
+    .search-box button:hover {
+      background: #c94f81;
     }
 
-    .card {
+    .categories {
+      padding: 60px 7%;
       background: white;
-      width: 280px;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
     }
 
-    .card h3 {
+    .section-heading {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .section-heading h2 {
+      font-size: 32px;
       margin-bottom: 10px;
     }
 
-    .card p {
-      color: #665761;
-      line-height: 1.5;
+    .section-heading p {
+      color: #746a70;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .category {
+      background: #fff8fb;
+      border: 1px solid #f3dce6;
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .category:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .category-icon {
+      font-size: 35px;
+      margin-bottom: 12px;
+    }
+
+    .category h3 {
+      margin-bottom: 5px;
+      font-size: 19px;
+    }
+
+    .category p {
+      color: #756b71;
+      font-size: 14px;
+    }
+
+    .how-it-works {
+      padding: 75px 7%;
+      background: #fff8fb;
+    }
+
+    .steps {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .step {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid #eeeeee;
+    }
+
+    .step-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #fbe3ee;
+      color: #c44d80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      color: #756b71;
+      font-size: 15px;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 80px 20px;
+      background: white;
+    }
+
+    .cta h2 {
+      font-size: 34px;
+      margin-bottom: 15px;
+    }
+
+    .cta p {
+      color: #756b71;
+      margin-bottom: 25px;
+    }
+
+    .cta button {
+      border: none;
+      background: #d95f91;
+      color: white;
+      padding: 15px 28px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     footer {
+      background: #29232a;
+      color: white;
       text-align: center;
-      padding: 30px;
-      background: white;
-      color: #777;
+      padding: 30px 20px;
+      font-size: 14px;
+    }
+
+    footer p {
+      color: #cfc7cc;
+      margin-top: 5px;
+    }
+
+    .message {
+      display: none;
+      max-width: 700px;
+      margin: 20px auto 0;
+      padding: 14px;
+      background: #fbe3ee;
+      color: #9f3e68;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 750px) {
+      header {
+        padding: 18px 5%;
+      }
+
+      nav {
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 65px 18px 50px;
+      }
+
+      .hero h1 {
+        font-size: 38px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .search-box {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .search-box button {
+        padding: 14px;
+      }
+
+      .category-grid,
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .categories,
+      .how-it-works {
+        padding: 50px 5%;
+      }
+
+      .logo {
+        font-size: 19px;
+      }
     }
   </style>
 </head>
@@ -124,91 +339,335 @@
   <header>
 
     <div class="logo">
-      💇🏽‍♀️ Rate My Service Provider
+      ⭐ Rate My <span>Service</span>
     </div>
 
     <nav>
-      <a href="#">Home</a>
-      <a href="#">Find a Service Provider</a>
-      <a href="#">Write a Review</a>
+      <a href="#home">Home</a>
+      <a href="#categories">Services</a>
+      <a href="#review">Write a Review</a>
     </nav>
 
   </header>
 
 
-  <section class="hero">
+  <main>
 
-    <h1>
-      Find a service provider you can trust.
-    </h1>
+    <section class="hero" id="home">
 
-    <p>
-      Read real reviews from real clients before you book your next appointment.
-    </p>
+      <div class="badge">
+        Real experiences. Better bookings.
+      </div>
 
-    <div class="search-box">
+      <h1>
+        Find a service provider
+        <span>you can trust.</span>
+      </h1>
 
-      <input
-        type="text"
-        placeholder="Search for a stylist, service, or city..."
-      >
+      <p>
+        Read real reviews from real clients before you book your next appointment.
+      </p>
 
-      <button>
-        Search
+      <div class="search-box">
+
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search for a provider, service, or city..."
+        >
+
+        <button onclick="searchServices()">
+          Search
+        </button>
+
+      </div>
+
+      <div class="message" id="searchMessage"></div>
+
+    </section>
+
+
+    <section class="categories" id="categories">
+
+      <div class="section-heading">
+
+        <h2>
+          What service are you looking for?
+        </h2>
+
+        <p>
+          Find reviews before you book.
+        </p>
+
+      </div>
+
+
+      <div class="category-grid">
+
+        <div class="category" onclick="chooseCategory('Hair')">
+
+          <div class="category-icon">
+            💇🏽‍♀️
+          </div>
+
+          <h3>
+            Hair
+          </h3>
+
+          <p>
+            Stylists, braiders, barbers & more
+          </p>
+
+        </div>
+
+
+        <div class="category" onclick="chooseCategory('Nails')">
+
+          <div class="category-icon">
+            💅🏽
+          </div>
+
+          <h3>
+            Nails
+          </h3>
+
+          <p>
+            Nail techs, manicures & pedicures
+          </p>
+
+        </div>
+
+
+        <div class="category" onclick="chooseCategory('Lashes')">
+
+          <div class="category-icon">
+            👁️
+          </div>
+
+          <h3>
+            Lashes
+          </h3>
+
+          <p>
+            Lash techs & lash extensions
+          </p>
+
+        </div>
+
+
+        <div class="category" onclick="chooseCategory('Brows')">
+
+          <div class="category-icon">
+            ✨
+          </div>
+
+          <h3>
+            Brows
+          </h3>
+
+          <p>
+            Brow artists & brow services
+          </p>
+
+        </div>
+
+
+        <div class="category" onclick="chooseCategory('Makeup')">
+
+          <div class="category-icon">
+            💄
+          </div>
+
+          <h3>
+            Makeup
+          </h3>
+
+          <p>
+            Makeup artists & beauty services
+          </p>
+
+        </div>
+
+
+        <div class="category" onclick="chooseCategory('More')">
+
+          <div class="category-icon">
+            ➕
+          </div>
+
+          <h3>
+            More
+          </h3>
+
+          <p>
+            Discover more local services
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="how-it-works">
+
+      <div class="section-heading">
+
+        <h2>
+          How Rate My Service works
+        </h2>
+
+        <p>
+          Make better booking decisions in three simple steps.
+        </p>
+
+      </div>
+
+
+      <div class="steps">
+
+        <div class="step">
+
+          <div class="step-number">
+            1
+          </div>
+
+          <h3>
+            Search
+          </h3>
+
+          <p>
+            Find a provider by name, service, or location.
+          </p>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            2
+          </div>
+
+          <h3>
+            Read Reviews
+          </h3>
+
+          <p>
+            See what real clients experienced before you book.
+          </p>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            3
+          </div>
+
+          <h3>
+            Book With Confidence
+          </h3>
+
+          <p>
+            Choose the provider that feels right for you.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="cta" id="review">
+
+      <h2>
+        Had a great—or not so great—experience?
+      </h2>
+
+      <p>
+        Help the next person make a better decision.
+      </p>
+
+      <button onclick="writeReview()">
+        Write a Review
       </button>
 
-    </div>
+    </section>
 
-  </section>
-
-
-  <section class="features">
-
-    <div class="card">
-
-      <h3>
-        ⭐ Read Reviews
-      </h3>
-
-      <p>
-        See what other clients really think about their service providers.
-      </p>
-
-    </div>
-
-
-    <div class="card">
-
-      <h3>
-        💇🏽‍♀️ Find Your Service Provider
-      </h3>
-
-      <p>
-        Search for Service Providers by name, location, or service.
-      </p>
-
-    </div>
-
-
-    <div class="card">
-
-      <h3>
-        💬 Share Your Experience
-      </h3>
-
-      <p>
-        Leave a review and help someone else make their next beauty decision.
-      </p>
-
-    </div>
-
-  </section>
+  </main>
 
 
   <footer>
-    © 2026 Rate My Service Provider
+
+    <strong>
+      ⭐ Rate My Service
+    </strong>
+
+    <p>
+      Helping people make better service decisions.
+    </p>
+
+    <p>
+      © 2026 Rate My Service
+    </p>
+
   </footer>
 
-</body>
 
+  <script>
+
+    function searchServices() {
+
+      const input = document.getElementById("searchInput");
+      const message = document.getElementById("searchMessage");
+
+      const search = input.value.trim();
+
+      if (search === "") {
+
+        message.style.display = "block";
+        message.textContent =
+          "Type a provider, service, or city to search.";
+
+        return;
+      }
+
+      message.style.display = "block";
+      message.textContent =
+        "We're getting ready to find results for \"" + search + "\".";
+
+    }
+
+
+    function chooseCategory(category) {
+
+      const message = document.getElementById("searchMessage");
+
+      message.style.display = "block";
+      message.textContent =
+        "You selected " + category + ". Provider results are coming soon!";
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    function writeReview() {
+
+      alert(
+        "Review submissions are coming soon! This is where clients will be able to share their experience."
+      );
+
+    }
+
+  </script>
+
+</body>
 </html>
