@@ -700,7 +700,7 @@
   )
   .join("");
 }
-async function viewReviews(providerId) {
+window.viewReviews = async function(providerId) {
   const message = document.getElementById("searchMessage");
 
   message.style.display = "block";
