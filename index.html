@@ -1,10 +1,12 @@
-21<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Rate My Service</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
@@ -16,13 +18,13 @@
     body {
       font-family: Arial, Helvetica, sans-serif;
       background: #fff8fb;
-      color: #29232a;
+      color: #292329;
       line-height: 1.5;
     }
 
     header {
       background: white;
-      border-bottom: 1px solid #eeeeee;
+      border-bottom: 1px solid #eee;
       padding: 20px 7%;
       display: flex;
       justify-content: space-between;
@@ -34,24 +36,20 @@
 
     .logo {
       font-size: 24px;
-      font-weight: 700;
-      color: #29232a;
+      font-weight: 800;
+      color: #292329;
     }
 
     .logo span {
       color: #d95f91;
     }
 
-    nav {
-      display: flex;
-      gap: 28px;
-    }
-
     nav a {
+      margin-left: 20px;
       text-decoration: none;
-      color: #4b4248;
-      font-size: 15px;
-      font-weight: 500;
+      color: #444;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     nav a:hover {
@@ -60,30 +58,13 @@
 
     .hero {
       text-align: center;
-      padding: 90px 20px 70px;
-      background: linear-gradient(
-        180deg,
-        #fff8fb 0%,
-        #fff 100%
-      );
-    }
-
-    .badge {
-      display: inline-block;
-      background: #fbe3ee;
-      color: #c44d80;
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 22px;
+      padding: 80px 20px;
+      background: linear-gradient(180deg, #fff8fb, #ffffff);
     }
 
     .hero h1 {
-      font-size: 52px;
-      line-height: 1.1;
-      max-width: 800px;
-      margin: 0 auto 20px;
+      font-size: 48px;
+      margin-bottom: 15px;
     }
 
     .hero h1 span {
@@ -91,244 +72,219 @@
     }
 
     .hero p {
-      max-width: 650px;
-      margin: 0 auto 35px;
-      color: #6d6269;
       font-size: 18px;
+      color: #756b71;
+      margin-bottom: 30px;
     }
 
     .search-box {
+      max-width: 650px;
+      margin: auto;
       display: flex;
-      max-width: 700px;
-      margin: 0 auto;
-      background: white;
-      border: 1px solid #eeeeee;
-      border-radius: 14px;
-      padding: 8px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      gap: 10px;
     }
 
     .search-box input {
       flex: 1;
-      border: none;
-      outline: none;
       padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
       font-size: 16px;
-      color: #29232a;
     }
 
-    .search-box button {
+    button {
       border: none;
-      background: #d95f91;
-      color: white;
-      padding: 0 28px;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
       cursor: pointer;
-    }
-
-    .search-box button:hover {
-      background: #c94f81;
-    }
-
-    .categories {
-      padding: 60px 7%;
-      background: white;
-    }
-
-    .section-heading {
-      text-align: center;
-      margin-bottom: 35px;
-    }
-
-    .section-heading h2 {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
-
-    .section-heading p {
-      color: #746a70;
-    }
-
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .category {
-      background: #fff8fb;
-      border: 1px solid #f3dce6;
-      border-radius: 16px;
-      padding: 28px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .category:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    }
-
-    .category-icon {
-      font-size: 35px;
-      margin-bottom: 12px;
-    }
-
-    .category h3 {
-      margin-bottom: 5px;
-      font-size: 19px;
-    }
-
-    .category p {
-      color: #756b71;
-      font-size: 14px;
-    }
-
-    .how-it-works {
-      padding: 75px 7%;
-      background: #fff8fb;
-    }
-
-    .steps {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
-    }
-
-    .step {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      border: 1px solid #eeeeee;
-    }
-
-    .step-number {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #fbe3ee;
-      color: #c44d80;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 15px;
       font-weight: 700;
     }
 
-    .step h3 {
-      margin-bottom: 10px;
+    .search-btn {
+      background: #d95f91;
+      color: white;
+      padding: 0 25px;
+      border-radius: 12px;
     }
 
-    .step p {
-      color: #756b71;
-      font-size: 15px;
-    }
-
-    .cta {
+    .categories {
+      padding: 50px 7%;
       text-align: center;
-      padding: 80px 20px;
-      background: white;
     }
 
-    .cta h2 {
-      font-size: 34px;
-      margin-bottom: 15px;
-    }
-
-    .cta p {
-      color: #756b71;
+    .categories h2 {
       margin-bottom: 25px;
     }
 
-    .cta button {
-      border: none;
+    .category-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .category-buttons button {
+      background: white;
+      border: 1px solid #f0b8cd;
+      color: #c44d7e;
+      padding: 12px 20px;
+      border-radius: 30px;
+    }
+
+    .category-buttons button:hover {
       background: #d95f91;
       color: white;
-      padding: 15px 28px;
+    }
+
+    #searchMessage {
+      display: none;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #fff0f6;
+      border-radius: 12px;
+      text-align: center;
+      color: #a43d69;
+    }
+
+    #results {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px 60px;
+    }
+
+    .provider-card {
+      background: white;
+      border: 1px solid #f3d5e1;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 18px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.05);
+    }
+
+    .provider-card h3 {
+      color: #c44d7e;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .provider-category {
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    .rating {
+      color: #c44d7e;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .location {
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .view-btn {
+      background: #d95f91;
+      color: white;
+      padding: 11px 20px;
+      border-radius: 10px;
+    }
+
+    .reviews {
+      max-width: 900px;
+      margin: 20px auto 60px;
+      padding: 0 20px;
+    }
+
+    .review-card {
+      background: white;
+      border: 1px solid #f3d5e1;
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 15px;
+    }
+
+    .review-card h4 {
+      color: #c44d7e;
+      font-size: 18px;
+    }
+
+    .verified {
+      color: #37956f;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .helpful-btn {
+      background: #fff0f6;
+      color: #c44d7e;
+      padding: 9px 15px;
+      border-radius: 20px;
+      margin-top: 12px;
+    }
+
+    .form-section {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 30px 20px;
+    }
+
+    .form-section h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .form-section input,
+    .form-section textarea,
+    .form-section select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    .form-section textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: #d95f91;
+      color: white;
       border-radius: 10px;
       font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
     }
 
     footer {
-      background: #29232a;
-      color: white;
       text-align: center;
-      padding: 30px 20px;
-      font-size: 14px;
+      padding: 30px;
+      background: white;
+      border-top: 1px solid #eee;
+      color: #777;
     }
 
-    footer p {
-      color: #cfc7cc;
-      margin-top: 5px;
-    }
-
-    .message {
-      display: none;
-      max-width: 700px;
-      margin: 20px auto 0;
-      padding: 14px;
-      background: #fbe3ee;
-      color: #9f3e68;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    @media (max-width: 750px) {
-      header {
-        padding: 18px 5%;
-      }
-
-      nav {
-        gap: 12px;
-      }
-
-      nav a {
-        font-size: 13px;
-      }
-
-      .hero {
-        padding: 65px 18px 50px;
-      }
-
+    @media (max-width: 700px) {
       .hero h1 {
-        font-size: 38px;
-      }
-
-      .hero p {
-        font-size: 16px;
+        font-size: 36px;
       }
 
       .search-box {
         flex-direction: column;
-        gap: 8px;
       }
 
-      .search-box button {
+      .search-btn {
         padding: 14px;
       }
 
-      .category-grid,
-      .steps {
-        grid-template-columns: 1fr;
+      header {
+        padding: 15px 5%;
       }
 
-      .categories,
-      .how-it-works {
-        padding: 50px 5%;
-      }
-
-      .logo {
-        font-size: 19px;
+      nav a {
+        margin-left: 10px;
       }
     }
   </style>
@@ -336,330 +292,240 @@
 
 <body>
 
-  <header>
+<header>
+  <div class="logo">Rate My <span>Service</span></div>
 
-    <div class="logo">
-      ⭐ Rate My <span>Service</span>
-    </div>
+  <nav>
+    <a onclick="goHome()">Home</a>
+    <a onclick="showCategories()">Services</a>
+    <a onclick="showReviewForm()">Write a Review</a>
+  </nav>
+</header>
 
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#categories">Services</a>
-      <a href="#review">Write a Review</a>
-    </nav>
 
-  </header>
+<section class="hero" id="home">
 
+  <h1>Find a service you can <span>trust.</span></h1>
 
-  <main>
+  <p>
+    Real experiences. Real reviews. Better decisions.
+  </p>
 
-    <section class="hero" id="home">
+  <div class="search-box">
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search provider, service, or city..."
+    >
 
-      <div class="badge">
-        Real experiences. Better bookings.
-      </div>
+    <button class="search-btn" onclick="searchServices()">
+      Search
+    </button>
+  </div>
 
-      <h1>
-        Find a service provider
-        <span>you can trust.</span>
-      </h1>
+</section>
 
-      <p>
-        Read real reviews from real clients before you book your next appointment.
-      </p>
 
-      <div class="search-box">
+<div id="searchMessage"></div>
 
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Search for a provider, service, or city..."
-        >
+<section class="categories" id="categories">
 
-        <button onclick="searchServices()">
-          Search
-        </button>
+  <h2>Browse Services</h2>
 
-      </div>
+  <div class="category-buttons">
 
-      <div class="message" id="searchMessage"></div>
+    <button onclick="chooseCategory('Hair')">
+      💇🏽‍♀️ Hair
+    </button>
 
-    </section>
+    <button onclick="chooseCategory('Nails')">
+      💅🏽 Nails
+    </button>
 
+    <button onclick="chooseCategory('Makeup')">
+      💄 Makeup
+    </button>
 
-    <section class="categories" id="categories">
+    <button onclick="chooseCategory('Barber')">
+      💈 Barber
+    </button>
 
-      <div class="section-heading">
+    <button onclick="chooseCategory('Lashes')">
+      👁️ Lashes
+    </button>
 
-        <h2>
-          What service are you looking for?
-        </h2>
+    <button onclick="chooseCategory('Braids')">
+      🪮 Braids
+    </button>
 
-        <p>
-          Find reviews before you book.
-        </p>
+  </div>
 
-      </div>
+</section>
 
 
-      <div class="category-grid">
+<section id="results"></section>
 
-        <div class="category" onclick="chooseCategory('Hair')">
 
-          <div class="category-icon">
-            💇🏽‍♀️
-          </div>
+<section class="form-section" id="reviewForm">
 
-          <h3>
-            Hair
-          </h3>
+  <h2>Share Your Experience 💗</h2>
 
-          <p>
-            Stylists, braiders, barbers & more
-          </p>
+  <input id="reviewerName" placeholder="Your name">
 
-        </div>
+  <input id="providerName" placeholder="Provider's name">
 
+  <input id="serviceName" placeholder="Service you received">
 
-        <div class="category" onclick="chooseCategory('Nails')">
+  <input
+    id="pricePaid"
+    type="number"
+    placeholder="Price paid"
+  >
 
-          <div class="category-icon">
-            💅🏽
-          </div>
+  <select id="rating">
+    <option value="">Choose a rating</option>
+    <option value="5">⭐⭐⭐⭐⭐ 5</option>
+    <option value="4">⭐⭐⭐⭐ 4</option>
+    <option value="3">⭐⭐⭐ 3</option>
+    <option value="2">⭐⭐ 2</option>
+    <option value="1">⭐ 1</option>
+  </select>
 
-          <h3>
-            Nails
-          </h3>
+  <textarea
+    id="reviewText"
+    placeholder="Tell us about your experience..."
+  ></textarea>
 
-          <p>
-            Nail techs, manicures & pedicures
-          </p>
+  <button class="submit-btn" onclick="submitReview()">
+    Submit Review
+  </button>
 
-        </div>
+</section>
 
 
-        <div class="category" onclick="chooseCategory('Lashes')">
+<footer>
+  © 2026 Rate My Service
+</footer>
 
-          <div class="category-icon">
-            👁️
-          </div>
-
-          <h3>
-            Lashes
-          </h3>
-
-          <p>
-            Lash techs & lash extensions
-          </p>
-
-        </div>
-
-
-        <div class="category" onclick="chooseCategory('Brows')">
-
-          <div class="category-icon">
-            ✨
-          </div>
-
-          <h3>
-            Brows
-          </h3>
-
-          <p>
-            Brow artists & brow services
-          </p>
-
-        </div>
-
-
-        <div class="category" onclick="chooseCategory('Makeup')">
-
-          <div class="category-icon">
-            💄
-          </div>
-
-          <h3>
-            Makeup
-          </h3>
-
-          <p>
-            Makeup artists & beauty services
-          </p>
-
-        </div>
-
-
-        <div class="category" onclick="chooseCategory('More')">
-
-          <div class="category-icon">
-            ➕
-          </div>
-
-          <h3>
-            More
-          </h3>
-
-          <p>
-            Discover more local services
-          </p>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <section class="how-it-works">
-
-      <div class="section-heading">
-
-        <h2>
-          How Rate My Service works
-        </h2>
-
-        <p>
-          Make better booking decisions in three simple steps.
-        </p>
-
-      </div>
-
-
-      <div class="steps">
-
-        <div class="step">
-
-          <div class="step-number">
-            1
-          </div>
-
-          <h3>
-            Search
-          </h3>
-
-          <p>
-            Find a provider by name, service, or location.
-          </p>
-
-        </div>
-
-
-        <div class="step">
-
-          <div class="step-number">
-            2
-          </div>
-
-          <h3>
-            Read Reviews
-          </h3>
-
-          <p>
-            See what real clients experienced before you book.
-          </p>
-
-        </div>
-
-
-        <div class="step">
-
-          <div class="step-number">
-            3
-          </div>
-
-          <h3>
-            Book With Confidence
-          </h3>
-
-          <p>
-            Choose the provider that feels right for you.
-          </p>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <section class="cta" id="review">
-
-      <h2>
-        Had a great—or not so great—experience?
-      </h2>
-
-      <p>
-        Help the next person make a better decision.
-      </p>
-
-      <button onclick="writeReview()">
-        Write a Review
-      </button>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const SUPABASE_URL = "https://suysredirdcgzqoqvopl.supabase.co";
-const SUPABASE_KEY = "sb_publishable_jh3z6yXmHMtvXUr8uVziBw_22I3A7kJ";
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+  /* =========================
+     SUPABASE CONNECTION
+  ========================= */
 
-console.log("Supabase connected!");
+  const SUPABASE_URL = "https://suysredirdcgzqoqvopl.supabase.co/";
 
-async function searchServices() {
-  const input = document.getElementById("searchInput");
-  const message = document.getElementById("searchMessage");
+  const SUPABASE_KEY = "sb_publishable_jh3z6yXmHMtvXUr8uVziBw_22I3A7kJ";
 
-  const search = input.value.trim();
-
-  if (!search) {
-    message.style.display = "block";
-    message.textContent =
-      "Type a provider, service, or city to search.";
-    return;
-  }
-
-  message.style.display = "block";
-  message.textContent = "Searching for providers...";
-
-  const { data, error } = await supabaseClient
-    .from("providers")
-    .select("*")
-    .or(
-      `name.ilike.%${search}%,category.ilike.%${search}%,city.ilike.%${search}%`
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
     );
 
-  if (error) {
-    console.error("SEARCH ERROR:", error);
+
+  /* =========================
+     SEARCH PROVIDERS
+  ========================= */
+
+  async function searchServices() {
+
+    const input =
+      document.getElementById("searchInput");
+
+    const message =
+      document.getElementById("searchMessage");
+
+    const results =
+      document.getElementById("results");
+
+    const search =
+      input.value.trim();
+
+    if (!search) {
+
+      message.style.display = "block";
+
+      message.textContent =
+        "Type a provider, service, or city to search.";
+
+      return;
+    }
+
+    message.style.display = "block";
+
     message.textContent =
-      "Something went wrong while searching.";
-    return;
+      "Searching for providers...";
+
+    results.innerHTML = "";
+
+    const safeSearch =
+      search.replace(/,/g, "");
+
+    const { data, error } =
+      await supabaseClient
+        .from("providers")
+        .select("*")
+        .or(
+          `name.ilike.%${safeSearch}%,category.ilike.%${safeSearch}%,city.ilike.%${safeSearch}%`
+        );
+
+    if (error) {
+
+      console.error(error);
+
+      message.textContent =
+        "Something went wrong while searching.";
+
+      return;
+    }
+
+    if (!data || data.length === 0) {
+
+      message.textContent =
+        `No providers found for "${search}".`;
+
+      return;
+    }
+
+    message.style.display = "none";
+
+    await displayProviders(data);
+
+    results.scrollIntoView({
+      behavior: "smooth"
+    });
   }
 
-  if (!data || data.length === 0) {
-    message.textContent =
-      `No providers found for "${search}".`;
-    return;
-  }
 
-  const cards = await Promise.all(
-    data.map(async (provider) => {
+  /* =========================
+     DISPLAY PROVIDERS
+  ========================= */
 
-      const { data: reviews, error: reviewError } =
+  async function displayProviders(providers) {
+
+    const results =
+      document.getElementById("results");
+
+    const cards = [];
+
+    for (const provider of providers) {
+
+      const { data: reviews, error } =
         await supabaseClient
           .from("reviews")
           .select("rating")
           .eq("provider_id", provider.id);
 
-      if (reviewError) {
-        console.error("REVIEW ERROR:", reviewError);
+      if (error) {
+        console.error(error);
       }
 
       const reviewList = reviews || [];
 
-      const reviewCount = reviewList.length;
+      const reviewCount =
+        reviewList.length;
 
       const averageRating =
         reviewCount > 0
@@ -672,333 +538,455 @@ async function searchServices() {
             ).toFixed(1)
           : "0.0";
 
-      return `
-        <div style="
-          padding:20px;
-          margin-top:15px;
-          background:white;
-          border-radius:16px;
-          border:1px solid #f3dce6;
-          box-shadow:0 5px 15px rgba(0,0,0,0.06);
-        ">
+      cards.push(`
 
-          <strong style="
-            display:block;
-            font-size:20px;
-            color:#c44d80;
-            margin-bottom:6px;
-          ">
-            ${provider.name || "Unnamed provider"}
-          </strong>
+        <div class="provider-card">
 
-          <p style="margin:4px 0;">
-            💇🏽‍♀️ ${provider.category || ""}
-          </p>
+          <h3>
+            ${escapeHTML(provider.name || "Unnamed provider")}
+          </h3>
 
-          <p style="
-            margin:8px 0;
-            font-weight:600;
-            color:#c44d80;
-          ">
-            ⭐ ${averageRating} · ${reviewCount}
+          <div class="provider-category">
+            💇🏽‍♀️ ${escapeHTML(provider.category || "Service")}
+          </div>
+
+          <div class="rating">
+            ⭐ ${averageRating}
+            · ${reviewCount}
             ${reviewCount === 1 ? "review" : "reviews"}
-          </p>
+          </div>
 
-          <p style="margin:4px 0 15px;">
-            📍 ${provider.city || "Location not listed"}
-          </p>
+          <div class="location">
+            📍 ${escapeHTML(provider.city || "Location not listed")}
+          </div>
 
           <button
-            onclick="viewReviews(${provider.id})"
-            style="
-              border:none;
-              background:#d95f91;
-              color:white;
-              padding:11px 20px;
-              border-radius:10px;
-              font-weight:600;
-              cursor:pointer;
-            "
+            class="view-btn"
+            onclick="viewReviews('${provider.id}')"
           >
             View Reviews
           </button>
 
         </div>
+
+      `);
+    }
+
+    results.innerHTML =
+      cards.join("");
+  }
+
+
+  /* =========================
+     VIEW REVIEWS
+  ========================= */
+
+  async function viewReviews(providerId) {
+
+    const results =
+      document.getElementById("results");
+
+    results.innerHTML =
+      "<h2>Reviews</h2><p>Loading reviews...</p>";
+
+    const { data, error } =
+      await supabaseClient
+        .from("reviews")
+        .select("*")
+        .eq("provider_id", providerId)
+        .order("created_at", {
+          ascending: false
+        });
+
+    if (error) {
+
+      console.error(error);
+
+      results.innerHTML =
+        "<p>Something went wrong loading the reviews.</p>";
+
+      return;
+    }
+
+    if (!data || data.length === 0) {
+
+      results.innerHTML = `
+
+        <div class="review-card">
+
+          <h3>No reviews yet.</h3>
+
+          <p>
+            Be the first person to review this provider!
+          </p>
+
+        </div>
+
       `;
-    })
-  );
 
-  message.innerHTML = cards.join("");
-}
+      return;
+    }
 
+    let html = "<h2>Reviews</h2>";
 
-window.viewReviews = async function(providerId) {
+    data.forEach(review => {
 
-  const message =
-    document.getElementById("searchMessage");
+      html += `
 
-  message.style.display = "block";
-  message.innerHTML = "Loading reviews...";
+        <div class="review-card">
 
-  const { data, error } =
-    await supabaseClient
-      .from("reviews")
-      .select("*")
-      .eq("provider_id", providerId)
-      .order("created_at", {
-        ascending:false
-      });
+          <h4>
+            ${escapeHTML(
+              review.reviewer_name || "Anonymous"
+            )}
+          </h4>
 
-  if (error) {
-    console.error("REVIEW LOADING ERROR:", error);
+          <div class="rating">
+            ⭐ ${review.rating || "No rating"}
+          </div>
 
-    message.innerHTML =
-      "Something went wrong loading the reviews.";
+          <p>
+            ${escapeHTML(
+              review.review_text || ""
+            )}
+          </p>
 
-    return;
-  }
-
-  if (!data || data.length === 0) {
-
-    message.innerHTML = `
-      <div style="
-        background:white;
-        padding:20px;
-        border-radius:16px;
-        border:1px solid #f3dce6;
-      ">
-        <strong>No reviews yet.</strong>
-
-        <p style="margin-top:6px;">
-          Be the first person to review this provider!
-        </p>
-      </div>
-    `;
-
-    return;
-  }
-
-  message.innerHTML = `
-    <h3 style="margin-bottom:15px;">
-      Reviews
-    </h3>
-
-    ${data.map(review => `
-      <div style="
-        background:white;
-        padding:20px;
-        margin-top:12px;
-        border-radius:16px;
-        border:1px solid #f3dce6;
-      ">
-
-        <strong>
-          ${review.reviewer_name || "Anonymous"}
-        </strong>
-
-        <p style="margin:6px 0;">
-          ⭐ ${review.rating || "No rating"}
-        </p>
-
-        <p style="margin:8px 0;">
-          ${review.review_text || ""}
-        </p>
-
-        <p style="
-          font-size:13px;
-          color:#756b71;
-        ">
-          ${review.service ? "Service: " + review.service : ""}
-          ${review.price_paid ? " • $" + review.price_paid : ""}
-        </p>
-
-        ${
-          review.is_verified
-            ? `
-              <p style="
-                color:#2e8b57;
-                font-weight:600;
-              ">
-                ✓ Verified review
-              </p>
-            `
-            : ""
-        }
-
-        <button
-  onclick="markHelpful(${review.id})"
-  style="
-    border:none;
-    background:#f8dce8;
-    color:#c44d80;
-    padding:8px 14px;
-    border-radius:10px;
-    font-weight:600;
-    cursor:pointer;
-  "
->
-  👍 ${review.helpful_count || 0}
-  ${review.helpful_count === 1 ? "person" : "people"} found this helpful
-</button>
-      </div>
-    `).join("")}
-  `;
-};
-
-window.markHelpful = async function(reviewId) {
-  const { data, error } = await supabaseClient
-    .from("reviews")
-    .select("helpful_count, provider_id")
-    .eq("id", reviewId)
-    .single();
-
-  if (error) {
-    console.error(error);
-    alert("Something went wrong.");
-    return;
-  }
-
-  const newCount = (Number(data.helpful_count) || 0) + 1;
-
-  const { error: updateError } = await supabaseClient
-    .from("reviews")
-    .update({ helpful_count: newCount })
-    .eq("id", reviewId);
-
-  if (updateError) {
-    console.error(updateError);
-    alert("Could not mark this review as helpful.");
-    return;
-  }
-
-  await viewReviews(data.provider_id);
-};
-function chooseCategory(category) {
-
-  const message =
-    document.getElementById("searchMessage");
-
-  message.style.display = "block";
-
-  message.textContent =
-    "You selected " +
-    category +
-    ". Provider results are coming soon!";
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-}
-
-
-function writeReview() {
-
-  alert(
-    "Review submissions are coming soon! This is where clients will be able to share their experience."
-  );
-
-}
-</script>
-
-      
-    return;
-  }
-
-  message.innerHTML = `
-    <h3 style="margin-bottom: 15px;">
-      Reviews
-    </h3>
-
-    ${data.map(review => `
-      <div style="
-        background: white;
-        padding: 20px;
-        margin-top: 12px;
-        border-radius: 16px;
-        border: 1px solid #f3dce6;
-      ">
-
-        <strong>
-          ${review.reviewer_name || "Anonymous"}
-        </strong>
-
-        <p style="margin: 6px 0;">
-          ⭐ ${review.rating || "No rating"}
-        </p>
-
-        <p style="margin: 8px 0;">
-          ${review.review_text || ""}
-        </p>
-
-        <p style="
-          font-size: 13px;
-          color: #756b71;
-        ">
           ${
             review.service
-              ? "Service: " + review.service
+              ? `<p>Service: ${escapeHTML(review.service)}</p>`
               : ""
           }
 
           ${
             review.price_paid
-              ? " • $" + review.price_paid
+              ? `<p>Price: $${review.price_paid}</p>`
               : ""
           }
-        </p>
 
-        ${
-          review.is_verified
-            ? `
-              <p style="
-                color: #2e8b57;
-                font-weight: 600;
-              ">
-                ✓ Verified review
-              </p>
-            `
-            : ""
-        }
+          ${
+            review.verified
+              ? `<div class="verified">
+                   ✓ Verified review
+                 </div>`
+              : ""
+          }
 
-        <p style="
-          font-size: 13px;
-          color: #756b71;
-        ">
-          👍 ${review.helpful_count || 0}
-          people found this helpful
-        </p>
+          <button
+            class="helpful-btn"
+            onclick="markHelpful('${review.id}')"
+          >
+            👍 ${review.helpful_count || 0}
+            ${
+              Number(review.helpful_count || 0) === 1
+                ? "person"
+                : "people"
+            }
+            found this helpful
+          </button>
 
-      </div>
-    `).join("")}
-  `;
-};
+        </div>
 
+      `;
+    });
 
-function chooseCategory(category) {
+    results.innerHTML = html;
 
-  const message =
-    document.getElementById("searchMessage");
-
-  message.style.display = "block";
-
-  message.textContent =
-    "You selected " +
-    category +
-    ". Provider results are coming soon!";
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-}
+    results.scrollIntoView({
+      behavior: "smooth"
+    });
+  }
 
 
-function writeReview() {
+  /* =========================
+     HELPFUL BUTTON
+  ========================= */
 
-  alert(
-    "Review submissions are coming soon! This is where clients will be able to share their experience."
-  );
+  async function markHelpful(reviewId) {
 
-}
+    const { data, error } =
+      await supabaseClient
+        .from("reviews")
+        .select("helpful_count")
+        .eq("id", reviewId)
+        .single();
+
+    if (error) {
+
+      console.error(error);
+
+      alert("Something went wrong.");
+
+      return;
+    }
+
+    const newCount =
+      Number(data.helpful_count || 0) + 1;
+
+    const { error: updateError } =
+      await supabaseClient
+        .from("reviews")
+        .update({
+          helpful_count: newCount
+        })
+        .eq("id", reviewId);
+
+    if (updateError) {
+
+      console.error(updateError);
+
+      alert("Could not mark this review as helpful.");
+
+      return;
+    }
+
+    alert("Thanks! 💗");
+
+    location.reload();
+  }
+
+
+  /* =========================
+     CATEGORY SEARCH
+  ========================= */
+
+  async function chooseCategory(category) {
+
+    const message =
+      document.getElementById("searchMessage");
+
+    const results =
+      document.getElementById("results");
+
+    message.style.display = "block";
+
+    message.textContent =
+      `Searching for ${category} providers...`;
+
+    results.innerHTML = "";
+
+    const { data, error } =
+      await supabaseClient
+        .from("providers")
+        .select("*")
+        .ilike("category", `%${category}%`);
+
+    if (error) {
+
+      console.error(error);
+
+      message.textContent =
+        "Something went wrong.";
+
+      return;
+    }
+
+    if (!data || data.length === 0) {
+
+      message.textContent =
+        `No ${category} providers found yet.`;
+
+      return;
+    }
+
+    message.style.display = "none";
+
+    await displayProviders(data);
+
+    results.scrollIntoView({
+      behavior: "smooth"
+    });
+  }
+
+
+  /* =========================
+     WRITE REVIEW
+  ========================= */
+
+  function showReviewForm() {
+
+    document
+      .getElementById("reviewForm")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+  }
+
+
+  async function submitReview() {
+
+    const reviewerName =
+      document.getElementById("reviewerName").value.trim();
+
+    const providerName =
+      document.getElementById("providerName").value.trim();
+
+    const service =
+      document.getElementById("serviceName").value.trim();
+
+    const price =
+      document.getElementById("pricePaid").value;
+
+    const rating =
+      document.getElementById("rating").value;
+
+    const reviewText =
+      document.getElementById("reviewText").value.trim();
+
+
+    if (
+      !reviewerName ||
+      !providerName ||
+      !service ||
+      !rating ||
+      !reviewText
+    ) {
+
+      alert("Please fill out all required fields.");
+
+      return;
+    }
+
+
+    const { data: provider, error: providerError } =
+      await supabaseClient
+        .from("providers")
+        .select("id")
+        .ilike("name", providerName)
+        .limit(1)
+        .maybeSingle();
+
+
+    if (providerError) {
+
+      console.error(providerError);
+
+      alert("Could not find the provider.");
+
+      return;
+    }
+
+
+    if (!provider) {
+
+      alert(
+        "That provider is not in our database yet."
+      );
+
+      return;
+    }
+
+
+    const { error } =
+      await supabaseClient
+        .from("reviews")
+        .insert({
+
+          provider_id: provider.id,
+
+          reviewer_name: reviewerName,
+
+          rating: Number(rating),
+
+          review_text: reviewText,
+
+          service: service,
+
+          price_paid: price
+            ? Number(price)
+            : null,
+
+          helpful_count: 0,
+
+          verified: false
+
+        });
+
+
+    if (error) {
+
+      console.error(error);
+
+      alert(
+        "We couldn't submit your review. Please try again."
+      );
+
+      return;
+    }
+
+
+    alert(
+      "Review submitted successfully! 💗"
+    );
+
+
+    document
+      .getElementById("reviewerName")
+      .value = "";
+
+    document
+      .getElementById("providerName")
+      .value = "";
+
+    document
+      .getElementById("serviceName")
+      .value = "";
+
+    document
+      .getElementById("pricePaid")
+      .value = "";
+
+    document
+      .getElementById("rating")
+      .value = "";
+
+    document
+      .getElementById("reviewText")
+      .value = "";
+  }
+
+
+  /* =========================
+     NAVIGATION
+  ========================= */
+
+  function goHome() {
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+
+  function showCategories() {
+
+    document
+      .getElementById("categories")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+  }
+
+
+  /* =========================
+     SECURITY / TEXT CLEANUP
+  ========================= */
+
+  function escapeHTML(value) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent =
+      String(value ?? "");
+
+    return div.innerHTML;
+  }
+
+
+  console.log("Rate My Service loaded successfully 💗");
+
 </script>
+
+</body>
+</html>
