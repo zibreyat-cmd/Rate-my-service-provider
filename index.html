@@ -106,32 +106,92 @@
     }
 
     .categories {
-      padding: 50px 7%;
+      padding: 64px 7% 76px;
       text-align: center;
+      background: #fff;
+    }
+
+    .section-eyebrow {
+      color: #c44d7e;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 8px;
     }
 
     .categories h2 {
-      margin-bottom: 25px;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .categories-intro {
+      color: #756b71;
+      margin: 0 auto 30px;
+      max-width: 560px;
     }
 
     .category-buttons {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      max-width: 1050px;
+      margin: 0 auto;
     }
 
     .category-buttons button {
-      background: white;
-      border: 1px solid #f0b8cd;
-      color: #c44d7e;
-      padding: 12px 20px;
-      border-radius: 30px;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      text-align: left;
+      padding: 24px;
+      background: linear-gradient(145deg, #fff, #fff4f8);
+      border: 1px solid #f2cddd;
+      border-radius: 20px;
+      color: #292329;
+      box-shadow: 0 7px 20px rgba(173, 73, 116, .07);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
 
     .category-buttons button:hover {
-      background: #d95f91;
-      color: white;
+      background: linear-gradient(145deg, #fff0f6, #ffe4ef);
+      border-color: #d95f91;
+      box-shadow: 0 12px 26px rgba(173, 73, 116, .14);
+      transform: translateY(-4px);
+    }
+
+    .category-icon {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 17px;
+      background: #ffe4ef;
+      font-size: 30px;
+    }
+
+    .category-copy strong {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 3px;
+    }
+
+    .category-copy span {
+      display: block;
+      color: #756b71;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .category-arrow {
+      align-self: flex-end;
+      color: #c44d7e;
+      font-size: 22px;
+      line-height: 1;
     }
 
     #searchMessage {
@@ -271,6 +331,32 @@
         font-size: 36px;
       }
 
+      .categories {
+        padding: 48px 5%;
+      }
+
+      .categories h2 {
+        font-size: 28px;
+      }
+
+      .category-buttons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .category-buttons button {
+        min-height: 175px;
+        padding: 17px;
+      }
+
+      .category-copy strong {
+        font-size: 18px;
+      }
+
+      .category-copy span {
+        font-size: 13px;
+      }
+
       .search-box {
         flex-direction: column;
       }
@@ -285,6 +371,16 @@
 
       nav a {
         margin-left: 10px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .category-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .category-buttons button {
+        min-height: 150px;
       }
     }
   </style>
@@ -330,32 +426,46 @@
 
 <section class="categories" id="categories">
 
+  <div class="section-eyebrow">Find your next favorite</div>
   <h2>Browse Services</h2>
+  <p class="categories-intro">Explore real client experiences and find a beauty professional you feel good booking.</p>
 
   <div class="category-buttons">
 
     <button onclick="chooseCategory('Hair')">
-      💇🏽‍♀️ Hair
+      <span class="category-icon">💇🏽‍♀️</span>
+      <span class="category-copy"><strong>Hair</strong><span>Stylists, silk presses, cuts and more</span></span>
+      <span class="category-arrow" aria-hidden="true">↗</span>
     </button>
 
     <button onclick="chooseCategory('Nails')">
-      💅🏽 Nails
+      <span class="category-icon">💅🏽</span>
+      <span class="category-copy"><strong>Nails</strong><span>Sets, manicures and nail art</span></span>
+      <span class="category-arrow" aria-hidden="true">↗</span>
     </button>
 
     <button onclick="chooseCategory('Makeup')">
-      💄 Makeup
+      <span class="category-icon">💄</span>
+      <span class="category-copy"><strong>Makeup</strong><span>Soft glam, full glam and special events</span></span>
+      <span class="category-arrow" aria-hidden="true">↗</span>
     </button>
 
     <button onclick="chooseCategory('Barber')">
-      💈 Barber
+      <span class="category-icon">💈</span>
+      <span class="category-copy"><strong>Barbers</strong><span>Fresh cuts, fades and lineups</span></span>
+      <span class="category-arrow" aria-hidden="true">↗</span>
     </button>
 
     <button onclick="chooseCategory('Lashes')">
-      👁️ Lashes
+      <span class="category-icon">👁️</span>
+      <span class="category-copy"><strong>Lashes</strong><span>Extensions, fills and lash lifts</span></span>
+      <span class="category-arrow" aria-hidden="true">↗</span>
     </button>
 
     <button onclick="chooseCategory('Braids')">
-      🪮 Braids
+      <span class="category-icon">🪮</span>
+      <span class="category-copy"><strong>Braids</strong><span>Protective styles and braided looks</span></span>
+      <span class="category-arrow" aria-hidden="true">↗</span>
     </button>
 
   </div>
